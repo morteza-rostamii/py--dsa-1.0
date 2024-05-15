@@ -60,6 +60,7 @@ if the value is not found, return -1
 
 """
 
+# Binary search
 # O(log n)
 def search(arr, target):
   
@@ -72,7 +73,7 @@ def search(arr, target):
   while left <= right: 
     # calculate the mid
     mid = math.floor((left + right) / 2.0)
-
+    print(mid)
     if arr[mid] == target:
       return mid
     # if: mid is less that target =: target has to be bigger
