@@ -156,17 +156,68 @@ def bubbleSort(arr):
 
   return arr
 
-print(bubbleSort([20, 14, 16, 3, 5]))
+#print(bubbleSort([20, 14, 16, 3, 5]))
 
 #=========================================
 
 # selection sort:
 
+def selectionSort(arr):
+  size = len(arr)
+  swap = 0
+
+  for i in range(0, size):
+    # set current_min to the next index (always initialize with current arr[i], take it as smallest)
+    current_min_index = i
+
+    for j in range(i+1, size):
+
+      if arr[j] < arr[current_min_index]:
+        # keep the index of smallest value compare to current min
+        current_min_index = j
+    
+    # move arr[i] to where smallest is 
+    swap = arr[current_min_index]
+    arr[current_min_index] = arr[i]
+    arr[i] = swap
+
+    print(arr)
+
+  return arr
+
+#print(selectionSort([24, 2, 5, 11, 1]))
+#print(selectionSort([34, 2, 4, 2, 12]))
+
 #=========================================
 
 # insertion sort:
 
+def insertionSort(arr):
+  
+  size = len(arr)
+  swap = None
+
+  for i in range(1, size):
+    current_min_index = i
+
+    for j in range(i-1, -1, -1):
+
+      if arr[j] > arr[current_min_index]:
+        swap = arr[current_min_index]
+        arr[current_min_index] = arr[j]
+        arr[j] = swap
+        current_min_index = j
+        print(i, j)
+
+  return arr
+
+#print(insertionSort([24, 2, 5, 11, 1]))
+#print(insertionSort([23, 3, 0, 11, 4]))
+
 #=========================================
+
+
+
 #=========================================
 #=========================================
 #=========================================
