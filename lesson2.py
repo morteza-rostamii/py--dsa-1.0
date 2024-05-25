@@ -216,9 +216,152 @@ def insertionSort(arr):
 
 #=========================================
 
+# merge sort: 
 
+def merge(left, right, arr):
+  left_size = len(left)
+  right_size = len(right)
+
+  results = []
+  p1 = 0
+  p2 = 0
+  print(left, right, arr)
+
+  while p1 < left_size and p2 < right_size:
+
+    if left[p1] < right[p2]:
+      results.append(left[p1])
+      p1 += 1
+    elif right[p2] < left[p1]:
+      results.append(right[p2])
+      p2 += 1 
+
+  print('---', p1, p2)
+  # push the remaining
+  if p1 < left_size: 
+    results.extend(left[p1:])
+
+  if p2 < right_size:
+    print('gooo', right[p2:])
+    results.extend(right[p2:])
+  
+  print('__', results)
+  return results
+
+def mergeSort(nums):
+  
+  size = len(nums)
+  # base case
+  if size <= 1:
+    return nums
+  
+  mid = size // 2
+  
+  left_half = mergeSort(nums[:mid])
+  right_half = mergeSort(nums[mid:])
+
+  #print(left_half, right_half)
+
+  return merge(left_half, right_half, nums)
+
+#print(mergeSort([24, 2, 5, 11, 1, 6]))
 
 #=========================================
+
+# quick sort
+
+# def quickSort(nums):
+
+#   size = len(nums)
+
+#   # base case 
+#   if size < 2:
+#     return
+
+#   temp = None
+#   # pivot is the last index
+#   pivot_inx = size - 1
+
+#   i = 0
+#   j = 0 
+
+#   while True:
+#     print(i, j)
+
+#     if nums[j] < nums[pivot_inx]:
+#       # if: j < pivot =: swap i with j
+#       swap = nums[i]
+#       nums[i] = nums[j]
+#       nums[j] = swap
+
+#       # move i only if j < pivot
+#       i += 1
+
+#     # move j on each loop
+#     j += 1 
+
+#     if j >= size: 
+#       break
+
+#     if j == pivot_inx:
+#       #i += 1
+#       # swap pivot between small and large values
+#       swap = nums[i]
+#       nums[i] = nums[pivot_inx]
+#       nums[j] = swap
+#       # last pivot index
+#       pivot_inx = i
+    
+
+#   left = quickSort(nums[:pivot_inx])
+#   # not include the pivot_inx
+#   right = quickSort(nums[pivot_inx+1:])
+
+#   print(left, right)
+#   return nums
+
+# changing the array we send in directly
+def quickSort(nums):
+  print('input', nums)
+  size = len(nums)
+
+  # base case 
+  # array with size less than 2 is sorted 
+  if size < 2:
+    # we are not returning value we are changing the original array
+    return 
+  
+  # take the middle value as pivot
+  pivot_index = size // 2
+  pivot = nums[pivot_index]
+
+  # partitioning to smaller that pivot and greater
+  smaller = []
+  greater = []
+
+  for i in range(0, size):
+    # skip pushing the pivot into smaller or greater
+    if i == pivot_index:
+      continue
+    
+    # smaller or equal for repeated elements
+    if nums[i] <= pivot:
+      smaller.append(nums[i])
+    # greater
+    else:
+      greater.append(nums[i])
+  
+  # recursive
+  quickSort(smaller)
+  quickSort(greater)
+
+  # rewrite the original array
+  nums[:] = smaller + [pivot] + greater
+  print(nums)
+
+arr = [24, 2, 5, 11, 1, 6]
+quickSort(arr)
+print(arr)
 #=========================================
 #=========================================
 #=========================================
