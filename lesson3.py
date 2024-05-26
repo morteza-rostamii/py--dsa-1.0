@@ -210,7 +210,7 @@ first_list.reverse()
 
 # Doubly linked list
 
-class Node:
+class Node2:
   def __init__(self, data):
     self.data = data
     self.next = None
@@ -220,6 +220,257 @@ class DoublyLinkedList:
 
   def __init__(self):
     self.head = None
+    self.tail = None
+    self.size = 0
+
+  # push to the end
+  def push(self, data):
+    # create a new Node
+    new_node = Node2(data)
+
+    # if: list empty 
+    if self.size == 0:
+      self.head = new_node
+      self.tail = self.head
+      self.size += 1
+      return
+
+    # if: list has 1 element
+    # if self.size == 1:
+    #   new_node.prev = self.tail
+    #   self.tail.next = new_node
+
+    # at least one element
+    self.tail.next = new_node
+    new_node.prev = self.tail
+    self.tail = new_node
+
+    self.size += 1
+
+  # pop the last item
+  def pop(self):
+    temp = self.tail
+
+    # if: list empty
+    if self.size == 0:
+      return None
+    
+    # if: one item
+    if self.size == 1:
+      self.head = None
+      self.tail = None
+      self.size -= 1
+      return temp.data
+
+    # list not empty
+    prev = self.tail.prev
+    prev.next = None
+    self.tail = prev
+
+    self.size -= 1
+    # return last item
+    return temp.data
+
+  # shift: remove element from the beginning
+  def shift(self):
+    removed = self.head
+    
+    # list is empty 
+    if self.size == 0:
+      return None
+    
+    # if: only one element
+    if self.size == 1:
+      self.head = None
+      self.tail = None
+
+      self.size -= 1
+      return removed
+    
+    # more than 1
+    next = self.head.next
+    next.prev = None
+    self.head = next
+    self.size -= 1
+
+    return removed
+  
+  # push element to the beginning
+  def unshift(self, data):
+    new_node = Node2(data)
+
+    # if: empty
+    if self.size == 0:
+      self.head = new_node
+      self.tail = new_node
+      self.size += 1
+      return
+    
+    # if: 1 element or more
+
+    new_node.next = self.head
+    self.head.prev = new_node
+    self.head = new_node
+    self.size += 1
+  
+  # take an index and return index at that position
+  def get(self, index):
+    
+    # if index out of range
+    if index < 0 or index >= self.size:
+      return None
+
+    if index == 0:
+      return self.head
+    
+    if index == self.size - 1:
+      return self.tail
+
+    # start from start or end of the list, which ever our index is closer to
+    distance_to_start = abs(index - 0)
+    distance_to_end = abs(index - self.size)
+
+    start_from_tail = distance_to_end < distance_to_start
+
+    current_node = None
+    if start_from_tail:
+      print('start from tail---')
+      current_node = self.tail
+
+      i = self.size - 1
+      # don't hit the index =: cause: node.next
+      while i > index:
+        current_node = current_node.prev
+        i -= 1
+
+    else:
+      print('start from head---')
+      current_node = self.head
+
+      i = 0
+      while i < index:
+        current_node = current_node.next
+        i += 1
+
+    return current_node
+
+  # set node data by index
+  def set(self, index, data):
+    found_node = self.get(index)
+    # if: index does not exists -: None
+    if found_node != None:
+      found_node.data = data
+      return True
+
+    # set was unsuccessful
+    return False
+
+  # insert a new node at an index
+  def insert(self, index, data):
+
+    # check for out of bound
+    if index < 0 or index >= self.size:
+      return False
+
+    # index=0 =: just push to start
+    if index == 0:
+      self.size += 1
+      return self.unshift(data)
+
+    # last index =: just push
+    if index == self.size - 1:
+      self.size += 1
+      return self.push(data)
+
+    new_node = Node2(data)
+
+    # get node by index
+    target_node = self.get(index)
+
+    if target_node != None:
+      prev = target_node.prev
+
+      new_node.next = target_node
+      new_node.prev = prev
+      prev.next = new_node
+      target_node.prev = new_node
+      self.size += 1
+      return True
+
+    return False
+
+  # remove element by index
+  def remove(self, index):
+
+    # check for out of bound
+    if index < 0 or index >= self.size:
+      return False
+
+    # index=0 =: just shift from start
+    if index == 0: 
+      self.size -= 1
+      return self.shift()
+
+    # last index =: just pop
+    if index == self.size - 1:
+      self.size -= 1
+      return self.pop()
+
+    # get node by index
+    target_node = self.get(index)
+
+    if target_node != None:
+      prev = target_node.prev
+      next = target_node.next
+
+      prev.next = next
+      next.prev = prev
+
+      # remove the current target
+      target_node = None
+
+      self.size -= 1
+      return True
+
+    return False
+
+  # print the list
+  def print_list(self):
+    current_node = self.head
+    list = []
+
+    while current_node:
+      list.append(current_node.data)
+      current_node = current_node.next
+    print(list)
+      
+node1 = DoublyLinkedList()
+
+node1.push('love')
+node1.push('great')
+print(node1.pop())
+print(node1.pop())
+#print(node1.pop())
+node1.push('white')
+node1.push('red')
+print(node1.shift().data)
+node1.unshift('sara')
+node1.unshift('john')
+node1.push(45)
+node1.push(46)
+node1.push(47)
+node1.push(48)
+
+node1.set(1, 'GOOGLE')
+
+node1.insert(2, 'HOT')
+node1.remove(3)
+
+print(node1.get(4).data)
+#print(node1.head.data, node1.tail.data)
+
+node1.print_list()
+
 
 #=========================================
 #=========================================
