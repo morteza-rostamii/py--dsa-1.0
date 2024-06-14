@@ -360,13 +360,318 @@ def count_connected_components(graph):
 
   return count
 
-components_count = count_connected_components(undirected1)
-print(components_count)
+#components_count = count_connected_components(undirected1)
+#print(components_count)
 
 #=========================================
+
+graph4 = {
+  0: [8, 1, 5],
+  1: [0],
+  5: [0, 8],
+  8: [0, 5],
+  2: [3, 4],
+  3: [2, 4],
+  4: [3, 2],
+}
+
+# return the length of biggest component
+def find_largest_component(graph):
+  count = 0
+  visited = set()
+
+  # loop through each node
+  for node in graph:
+    print("start_-", node)
+    if node in visited: 
+      continue
+    
+    # count for component nodes
+    nodes_count = 0
+
+    # run depth first search for each node
+    stack = []
+    current_node = node
+    stack.append(current_node)
+    
+    while len(stack):
+      current_node = stack.pop()
+      
+      if current_node not in visited:
+        visited.add(current_node)
+        print(current_node, visited)
+
+        # count newly visited nodes
+        nodes_count += 1
+        
+        while len(graph[current_node]):
+          n = graph[current_node].pop()
+          stack.append(n)
+    
+    # after counting for each component
+    # if: this component count is greater than: previous
+    if count < nodes_count:
+      count = nodes_count
+
+  print("COUNT--", count)
+
+#find_largest_component(graph4)
+
 #=========================================
+
+# shortest path problem: 
+
+graph5 = {
+  'w': ['x', 'v'],
+  'x': ['y', 'w'],
+  'z': ['y', 'v'],
+  'y': ['x', 'z'],
+  'v': ['w', 'z'],
+}
+
+def find_shortest_path(graph, src, dst):
+  queue = []
+  visited = set()
+
+  current_node = {"node": src, "dist": 0}
+  queue.append(current_node)
+
+  while len(queue):
+    current_node = queue.pop(0)
+
+    if current_node['node'] not in visited:
+      visited.add(current_node['node'])
+      #print(current_node)
+      # destination found
+      if current_node['node'] == dst:
+        return current_node 
+
+      while len(graph[current_node['node']]):
+        n = {
+          "node": graph[current_node['node']].pop(0),
+          "dist": current_node['dist'] + 1,
+        }
+        queue.append(n)
+
+  return None
+
+#res1 = find_shortest_path(graph5, 'w', 'z')
+#print(res1)
+
 #=========================================
+
+# island count:
+
+"""
+
+Write a function, islandCount, that takes in a grid containing Ws and Ls. W represents water and L represents land. The function should return the number of islands on the grid. An island is a vertically or horizontally connected region of land.
+
+# input
+const grid = [
+  ['W', 'L', 'W', 'W', 'W'],
+  ['W', 'L', 'W', 'W', 'W'],
+  ['W', 'W', 'W', 'L', 'W'],
+  ['W', 'W', 'L', 'L', 'W'],
+  ['L', 'W', 'W', 'L', 'L'],
+  ['L', 'L', 'W', 'W', 'W'],
+];
+
+#==================================
+
+# we kinda have to trait our 2d arr as a graph.
+
+# we loop through the whole things.
+# each point is a node: (0,1) 
+# and neighbors are: up, down, left, right
+
+# up: (0+1, 1)
+  # watchout for out of bound!!
+
+# down: (0-1, 1)
+# left: (0, 1-1)
+# right: (0, 1+1)
+
+
+
+#==================================
+
+
+# 2d array
+W L W W L W
+L L W W L W
+
+# a node: (0,0)
+  # value: 
+    # W or L
+
+
+          (r-1, c)
+            |
+(r, c-1)  <- -> (r, c+1)
+            |
+          (r+1, c)
+
+# if: node.value = L:
+  # it's a land -> start searching the island
+  # depth-first search
+    # don't visit a node twice
+
+# count each island
+
+# don't start a depth-first search => if: we have visited current node before.
+
+
+
+"""
+grid = [
+  ['W', 'L', 'W', 'W', 'W'],
+  ['W', 'L', 'W', 'W', 'W'],
+  ['W', 'W', 'W', 'L', 'W'],
+  ['W', 'W', 'L', 'L', 'W'],
+  ['L', 'W', 'W', 'L', 'L'],
+  ['L', 'L', 'W', 'W', 'W'],
+]
+
+def get_neighbors(grid, current_node, row_size, col_size):
+  # get the: up, down, left, right neighbors
+  neighbors = []
+
+  # get current_node coordinates
+  node_point = current_node['point']
+
+  # up
+  if node_point['x'] - 1 > 0: 
+    p = {'x': node_point['x'] - 1, 'y': node_point['y']}
+    val = grid[p['x']][p['y']]
+    up = {
+      'value': val,
+      'point': p ,
+      'name': F"{p['x']}:{p['y']}",
+    }
+  else:
+    # for nodes that are on top grid border =: there is no up
+    up = None
+
+  # down
+  if node_point['x'] + 1 < row_size: 
+    p = {'x': node_point['x'] + 1, 'y': node_point['y']}
+    val = grid[p['x']][p['y']]
+    down = {
+      'value': val,
+      'point': p ,
+      'name': F"{p['x']}:{p['y']}",
+    }
+  else:
+    down = None
+
+  # left
+  if node_point['y'] - 1 > 0: 
+    p = {'x': node_point['x'], 'y': node_point['y'] - 1}
+    val = grid[p['x']][p['y']]
+    left = {
+      'value': val,
+      'point': p ,
+      'name': F"{p['x']}:{p['y']}",
+    }
+  else:
+    left = None
+
+  # right
+  if node_point['y'] + 1 < col_size: 
+    p = {'x': node_point['x'], 'y': node_point['y'] + 1}
+    val = grid[p['x']][p['y']]
+    right = {
+      'value': val,
+      'point':p,
+      'name': F"{p['x']}:{p['y']}",
+    }
+  else:
+    right = None
+
+  # ignore all neighbors that are not Land
+  if up and up['value'] != 'W':
+    neighbors.append(up)
+
+  if down and down['value'] != 'W':
+    neighbors.append(down)
+
+  if left and left['value'] != 'W':
+    neighbors.append(left)
+
+  if right and right['value'] != 'W':
+    neighbors.append(right)
+
+  return neighbors
+
+# a depth first search:
+# root: {value: 'w', point: {x:0, y:0}}
+def explore_island(grid, root, visited, row_size, col_size):
+  
+  # if: root is visited =: return: 0 => add nothing to the count
+  if root['name'] in visited:
+    return 0
+  
+  # skip the waters
+  if root['value'] == 'W':
+    return 0
+  #print('node--', root, '\n\n')
+  # start the depth-first search
+  stack = []
+  current_node = root
+
+  stack.append(current_node)
+
+  while len(stack):
+    current_node = stack.pop()
+
+    if current_node['name'] not in visited:
+      print('((LAND))', current_node)
+
+      visited.add(current_node['name'])
+
+      neighbors = get_neighbors(grid, current_node, row_size, col_size)
+
+      while len(neighbors):
+        n = neighbors.pop()
+        stack.append(n)      
+
+  print('end OF island')
+  # 1 island has been explored
+  return 1
+
+# count: number of islands
+def island_count(grid):
+  num_of_islands = 0
+  visited = set()
+
+  row_size = len(grid)
+  col_size = len(grid[0]) 
+  # loop every element inside 2d arr
+  for row in range(0, row_size):
+    for col in range(0, col_size):
+      #print(F"{row}:{col}:: ", grid[row][col])
+      root = {
+        # use: this to recognize Land or Water
+        'value': grid[row][col],
+        'point': {'x': row, 'y': col},
+        # use this name in visited
+        'name': F"{row}:{col}",
+      }
+      #print(F"{row}:{col}", root)
+      #print('===========================***', '\n')
+      count = explore_island(grid, root, visited, row_size, col_size)
+      num_of_islands += count
+
+  print(F"we have {num_of_islands} island.")
+
+island_count(grid)
+
 #=========================================
+
+# minimum island:
+
+
+
 #=========================================
 #=========================================
 #=========================================
